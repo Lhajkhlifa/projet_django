@@ -16,7 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
+from insertion import views
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('inserer_marque/',view=views.insertion_marque,name="insertion")
 ]
