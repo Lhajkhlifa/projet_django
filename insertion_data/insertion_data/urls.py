@@ -19,5 +19,7 @@ from django.urls import path
 from insertion import views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('inserer_marque/',view=views.insertion_marque,name="insertion")
+    path('inserer_marque/',view=views.insertion_marque,name="insertion"),
+    path('insertion_vehicule/',view=views.insertion_vehicule),
+    path('insertion_client/',view=views.insertion_client)
 ]
