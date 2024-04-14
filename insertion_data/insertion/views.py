@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from numpy import nan
 import pandas
 import insertion.models
 from insertion.models import Client
@@ -10,7 +9,7 @@ from pytz import UTC
 
 #def lire_fichier(fichier):
  #   return 
-def insertion_marque(request) :
+def insertion_marque() :
     list_marques = pandas.read_excel(io="donnees_fixe.xlsx",sheet_name="Marques")['Marques'].tolist()
     try :
         for i in list_marques :
@@ -21,7 +20,7 @@ def insertion_marque(request) :
     except Exception as e:
         return HttpResponse(f"<p>{str(e)}</p>")
      
-def insertion_vehicule(request):
+def insertion_vehicule():
     def ignore_null(x) :
         if pandas.notnull(x) :
             return x
@@ -38,7 +37,7 @@ def insertion_vehicule(request):
         l1 = len(list_vehicules["Immatriculation"])
         print(l)
         print(l1)
-        for y in range(1,l) :
+        for y in range(l) :
             vehicule = insertion.models.Vehicule()
             for i,j in zip(xls,model):
                     setattr(vehicule, j,list_vehicules[i].tolist()[y])
@@ -48,9 +47,9 @@ def insertion_vehicule(request):
             vehicule.save()
         return HttpResponse("<p>insertion termine!</p>")
     except Exception as e :
-        return HttpResponse(f"{str(e)}")
+        return str(e)
 
-def insertion_client(request):
+def insertion_client():
     list_clients = pandas.read_excel(io="Exportpark.xls")['Client'].tolist()
     set_clients = set(list_clients)
     #return HttpResponse(f"{set_clients}")    
@@ -66,6 +65,11 @@ def insertion_client(request):
                     client.user = User()
                     client.username = i
             client.save()
-        return HttpResponse(f"<p>insertion termine!</p>")
+        return "insertion termine!"
     except Exception as e :
-        return HttpResponse(f"{str(e)}")
+        return str(e)
+def insertion_donnees(request):
+    reponseC = insertion_client()
+    #reponseM = insertion_marque()
+    reponseV = insertion_vehicule()
+    return HttpResponse(f"{reponseC}, {reponseV}")
