@@ -1,3 +1,7 @@
 from django.contrib import admin
+from . import models
+class VehiculeAdmin(admin.ModelAdmin):
+    #list_display = ('vin',)
+    pass
 
-# Register your models here.
+admin.site.register(models.Vehicule, VehiculeAdmin)

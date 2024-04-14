@@ -10,15 +10,15 @@ from pytz import UTC
 #def lire_fichier(fichier):
  #   return 
 def insertion_marque() :
-    list_marques = pandas.read_excel(io="donnees_fixe.xlsx",sheet_name="Marques")['Marques'].tolist()
+    list_marques = set(pandas.read_excel(io="Exportpark.xls")['Marque'].tolist())
     try :
         for i in list_marques :
             marque = insertion.models.Marque()
             marque.nom = i
             marque.save()
-        return HttpResponse(f"insertion termine!")
+        return "insertion termine!"
     except Exception as e:
-        return HttpResponse(f"<p>{str(e)}</p>")
+        return str(e)
      
 def insertion_vehicule():
     def ignore_null(x) :
@@ -41,8 +41,10 @@ def insertion_vehicule():
             vehicule = insertion.models.Vehicule()
             for i,j in zip(xls,model):
                     setattr(vehicule, j,list_vehicules[i].tolist()[y])
-            client_id = Client.objects.get(nom=list_vehicules["Client"].tolist()[y])
-            setattr(vehicule, "client_id", client_id.id)
+            client_id = Client.objects.get(nom=list_vehicules["Client"].tolist()[y]).id
+            marque_id = insertion.models.Marque.objects.get(nom=list_vehicules["Marque"].tolist()[y]).id
+            vehicule.client_id = client_id
+            vehicule.marque_id = marque_id
             vehicule.creation_date = datetime.today().strftime('%Y-%m-%d')
             vehicule.save()
         return HttpResponse("<p>insertion termine!</p>")
@@ -70,6 +72,6 @@ def insertion_client():
         return str(e)
 def insertion_donnees(request):
     reponseC = insertion_client()
-    #reponseM = insertion_marque()
+    reponseM = insertion_marque()
     reponseV = insertion_vehicule()
-    return HttpResponse(f"{reponseC}, {reponseV}")
+    return HttpResponse(f"{reponseC}, {reponseV}, {reponseM}")
